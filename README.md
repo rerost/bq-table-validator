@@ -16,10 +16,6 @@ bq-table-validator validate <VALIDATE_YAML_PATH>
 ❯ bq-table-validator validate example/validate1.yml --projectid=$GCP_PROJECT_ID
 
 ~/go/src/github.com/rerost/bq-table-validator (master) <U>
-❯ echo $?
-0
-
-~/go/src/github.com/rerost/bq-table-validator (master) <U>
 ❯ cat example/validate2.yml
 - name: test
   sql: |
@@ -31,7 +27,4 @@ bq-table-validator validate <VALIDATE_YAML_PATH>
 @ [0,"id"]
 - 1
 + 2
-
-~/go/src/github.com/rerost/bq-table-validator (master) <U>
-❯ echo $?
 ```
