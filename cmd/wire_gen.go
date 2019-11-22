@@ -6,13 +6,41 @@
 package cmd
 
 import (
+	"cloud.google.com/go/bigquery"
 	"context"
+	"github.com/googleapis/google-cloud-go-testing/bigquery/bqiface"
+	"github.com/pkg/errors"
+	"github.com/rerost/bq-table-validator/domain/bqquery"
+	"github.com/rerost/bq-table-validator/domain/validator"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 // Injectors from wire.go:
 
 func InitializeCmd(ctx context.Context, cfg Config) (*cobra.Command, error) {
-	command := NewCmdRoot(ctx)
+	client, err := NewBQClient(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+	middleware := NewBQMiddleware(client)
+	validatorValidator := validator.NewValidator(middleware)
+	command := NewCmdRoot(ctx, validatorValidator)
 	return command, nil
+}
+
+// wire.go:
+
+func NewBQClient(ctx context.Context, cfg Config) (bqiface.Client, error) {
+	zap.L().Debug("Create BQ Client", zap.String("ProjectID", cfg.ProjectID))
+	bqClient, err := bigquery.NewClient(ctx, cfg.ProjectID)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return bqiface.AdaptClient(bqClient), nil
+}
+
+func NewBQMiddleware(bqClient bqiface.Client) validator.Middleware {
+	return bqquery.NewBQQuery(bqClient)
 }

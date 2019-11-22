@@ -1,0 +1,4 @@
+- name: test
+  sql: |
+    SELECT 1 AS id
+  expect: '[{"id": 1}]'

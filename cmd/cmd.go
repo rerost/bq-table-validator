@@ -13,7 +13,6 @@ import (
 
 type Config struct {
 	ProjectID string
-	Dir       string
 	Debug     bool
 	Verbose   bool
 }
@@ -42,7 +41,9 @@ func Run() error {
 	}
 
 	if err := cmd.Execute(); err != nil {
-		zap.L().Debug("error", zap.String("stack trace", fmt.Sprintf("%+v\n", err)))
+		if cfg.Debug {
+			fmt.Printf("%+v", err)
+		}
 	}
 	return nil
 }
@@ -60,6 +61,10 @@ func NewLogger(cfg Config) (*zap.Logger, error) {
 }
 
 func NewConfig() (Config, error) {
+	pflag.StringP("projectid", "", "", "GCP ProjectID")
+	pflag.BoolP("verbose", "v", false, "")
+	pflag.BoolP("debug", "d", false, "")
+
 	viper.AutomaticEnv()
 	viper.BindPFlags(pflag.CommandLine)
 
