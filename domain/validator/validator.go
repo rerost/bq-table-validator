@@ -8,6 +8,7 @@ import (
 
 	jd "github.com/josephburnett/jd/lib"
 	"github.com/pkg/errors"
+	"github.com/rerost/bq-table-validator/domain/tablemock"
 	"github.com/rerost/bq-table-validator/types"
 )
 
@@ -21,16 +22,23 @@ type Middleware interface {
 
 type validatorImpl struct {
 	middleware Middleware
+	tm         tablemock.TableMock
 }
 
-func NewValidator(middleware Middleware) Validator {
+func NewValidator(middleware Middleware, tm tablemock.TableMock) Validator {
 	return validatorImpl{
 		middleware: middleware,
+		tm:         tm,
 	}
 }
 
 func (v validatorImpl) Valid(ctx context.Context, validate types.Validate) (string, error) {
-	queryResult, err := v.middleware.Query(ctx, validate.SQL)
+	sql, err := v.tm.Mock(ctx, validate.SQL, validate.Mocks)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	queryResult, err := v.middleware.Query(ctx, sql)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
