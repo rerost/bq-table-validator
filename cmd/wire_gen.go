@@ -11,9 +11,11 @@ import (
 	"github.com/googleapis/google-cloud-go-testing/bigquery/bqiface"
 	"github.com/pkg/errors"
 	"github.com/rerost/bq-table-validator/domain/bqquery"
+	"github.com/rerost/bq-table-validator/domain/tablemock"
 	"github.com/rerost/bq-table-validator/domain/validator"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
+	"time"
 )
 
 // Injectors from wire.go:
@@ -24,7 +26,9 @@ func InitializeCmd(ctx context.Context, cfg Config) (*cobra.Command, error) {
 		return nil, err
 	}
 	middleware := NewBQMiddleware(client)
-	validatorValidator := validator.NewValidator(middleware)
+	time := NewTime()
+	tableMock := tablemock.NewTableMock(time)
+	validatorValidator := validator.NewValidator(middleware, tableMock)
 	command := NewCmdRoot(ctx, validatorValidator)
 	return command, nil
 }
@@ -43,4 +47,8 @@ func NewBQClient(ctx context.Context, cfg Config) (bqiface.Client, error) {
 
 func NewBQMiddleware(bqClient bqiface.Client) validator.Middleware {
 	return bqquery.NewBQQuery(bqClient)
+}
+
+func NewTime() time.Time {
+	return time.Now()
 }

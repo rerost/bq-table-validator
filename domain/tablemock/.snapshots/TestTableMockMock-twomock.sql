@@ -1,0 +1,6 @@
+WITH mocked_users_20060102150405 AS (
+SELECT 1 AS id
+) , mocked_item_20060102150405 AS (
+SELECT 1 AS user_id
+)
+SELECT id, COUNT(1) FROM mocked_users_20060102150405 INNER JOIN mocked_item_20060102150405 ON mocked_users_20060102150405.id = mocked_item_20060102150405.user_id GROUP BY mocked_users_20060102150405.id

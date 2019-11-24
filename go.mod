@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	cloud.google.com/go/bigquery v1.0.1
+	github.com/bradleyjkemp/cupaloy v2.3.0+incompatible
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/google/wire v0.3.0
 	github.com/googleapis/google-cloud-go-testing v0.0.0-20191008195207-8e1d251e947d

@@ -1,0 +1,4 @@
+WITH mocked_users_20060102150405 AS (
+SELECT 1 AS id
+)
+SELECT id FROM mocked_users_20060102150405

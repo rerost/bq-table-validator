@@ -1,0 +1,28 @@
+- name: validate-with-mock
+  mocks:
+    - table: bigquery-public-data.stackoverflow.posts_answers
+      sql: |
+        SELECT owner_user_id
+        FROM UNNEST([1,2,3,4,5]) AS owner_user_id
+  sql: |
+    SELECT owner_user_id
+    FROM `bigquery-public-data.stackoverflow.posts_answers`
+    ORDER BY owner_user_id
+  expect: '
+    [
+      {
+        "owner_user_id": "1"
+      },
+      {
+        "owner_user_id": "2"
+      },
+      {
+        "owner_user_id": "3"
+      },
+      {
+        "owner_user_id": "4"
+      },
+      {
+        "owner_user_id": "5"
+      }
+  ]'
