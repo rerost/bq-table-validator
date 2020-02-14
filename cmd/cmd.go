@@ -44,6 +44,7 @@ func Run() error {
 		if cfg.Debug {
 			fmt.Printf("%+v", err)
 		}
+		return errors.WithStack(err)
 	}
 	return nil
 }
